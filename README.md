@@ -1,5 +1,8 @@
 # Identifying the Smallest Adversarial Load Perturbations that Render DC-OPF Infeasible
 
+<img width="1116" height="672" alt="image" src="https://github.com/user-attachments/assets/4d6104b7-bebe-40c4-afc3-b59d95a67239" />
+
+
 To set up and initialize this respository locally, clone the folder, launch Julia locally, and then run 
 ```
 julia> ]
