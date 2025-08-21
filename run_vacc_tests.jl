@@ -30,7 +30,7 @@ test_parsing(cases)
 include("./src/squeeze_functions.jl")
 
 MIPGap       = 0.001
-TimeLimit    = 15.00
+TimeLimit    = 43200.00
 
 case = cases[4]
 network_data       = pglib(case)
