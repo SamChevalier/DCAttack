@@ -342,6 +342,45 @@ function solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra
     return faraks_log
 end
 
+function solve_farkas_lemma_record_log(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
+    model = Model(Gurobi.Optimizer)
+    set_optimizer_attribute(model, "MIPGap", MIPGap)
+    set_optimizer_attribute(model, "TimeLimit", TimeLimit)
+    set_optimizer_attribute(model, "MIPFocus", 3)
+    set_optimizer_attribute(model, "LogFile", "./data/gurobi_branching_"*string(nb)*"bus"*".log")
+
+    num_mu  = size(A,1)
+    n_perts = size(B,2)
+    @variable(model, delta[1:n_perts])
+    @variable(model, mu[1:num_mu])
+    @constraint(model, 0.0 .<= mu)
+    @constraint(model, A'*mu .== 0.0)
+    @constraint(model, mu'*(B*delta+b) .== 0.001)
+    @objective(model, Min, dot(delta,delta))
+
+    # initialize with x0
+    if init
+        set_start_value.(delta, x0[:delta])
+        set_start_value.(mu, x0[:mu])
+    end
+
+    # log structures
+    global timelog  = []
+    global bestlog  = []
+    global boundlog = []
+    MOI.set(model, Gurobi.CallbackFunction(), callback_log)
+
+    # optimize
+    optimize!(model)
+
+    # clean up
+    # => faraks_log = filterlog(timelog, bestlog, boundlog)
+    # write to file
+    # => testdata_file = "./farkas_"*string(nb)*"bus"*extra_string*".h5"
+    # => write_hdf5data(testdata_file, faraks_log)
+    # =>return faraks_log
+end
+
 function solve_farkas_lemma_local(A, B, b; initialize_start = false, lower_ipopt_tol = false, delta0, mu0)
     model = Model(Ipopt.Optimizer)
 
