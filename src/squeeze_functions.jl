@@ -336,7 +336,7 @@ function solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra
     faraks_log = filterlog(timelog, bestlog, boundlog)
 
     # write to file
-    testdata_file = "./dcopf/data/farkas_"*string(nb)*"bus"*extra_string*".h5"
+    testdata_file = "./data/farkas_"*string(nb)*"bus"*extra_string*".h5"
     write_hdf5data(testdata_file, faraks_log)
 
     return faraks_log
@@ -509,7 +509,7 @@ function solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_stri
     control_log = filterlog(timelog, bestlog, boundlog)
 
     # write to file
-    testdata_file = "./dcopf/data/control_"*string(nb)*"bus"*extra_string*".h5"
+    testdata_file = "./data/control_"*string(nb)*"bus"*extra_string*".h5"
     write_hdf5data(testdata_file, control_log)
 
     return control_log
@@ -571,7 +571,7 @@ function solve_squeeze(A, B, b, MIPGap, TimeLimit, nb, x0)
     squeeze_log = filterlog(timelog, bestlog, boundlog)
 
     # write to file
-    testdata_file = "./dcopf/data/squeeze_"*string(nb)*"bus.h5"
+    testdata_file = "./data/squeeze_"*string(nb)*"bus.h5"
     t_final       = value(t)
     delta2_final  = value(dot(delta,delta))
     write_squeeze_hdf5data(testdata_file, squeeze_log, t_final, delta2_final)
