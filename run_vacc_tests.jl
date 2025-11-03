@@ -15,9 +15,9 @@ Random.seed!(1)
 # %% test
 include("./src/squeeze_functions.jl")
 
-function run_118_test()
+function run_118_test(TimeLimit::Float64)
     MIPGap    = 0.001
-    TimeLimit = 100.0 #86400.00
+    # => TimeLimit = 100.0
 
     # %% ========= attack sequence! ========= %% #
     tmax_ipopt  = 600.0   
@@ -83,7 +83,8 @@ function run_118_test()
 end
 
 # run
-run_118_test()
+TimeLimit = 100.0
+run_118_test(TimeLimit)
 
 # %% ===
 #using HDF5
