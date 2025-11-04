@@ -30,7 +30,8 @@ A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
 # now, solve the reformulation ==========
 model = Model(Gurobi.Optimizer)
 set_optimizer_attribute(model, "MIPGap", 0.01)
-set_optimizer_attribute(model, "TimeLimit", 100.0)
+tg = 172800.0 - 500.0
+set_optimizer_attribute(model, "TimeLimit", tg)
 
 num_p   = size(A,2)
 num_mu  = size(A,1)

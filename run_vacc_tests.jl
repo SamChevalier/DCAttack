@@ -83,8 +83,8 @@ function run_118_test(TimeLimit::Float64)
 end
 
 # run
-TimeLimit = 43200.0
-run_118_test(TimeLimit)
+tg = 172800.0 - 500.0
+run_118_test(tg)
 
 # %% ===
 #using HDF5
