@@ -79,11 +79,11 @@ function run_118_test(TimeLimit::Float64)
                 :G     => 0)
 
     # solve farkas lemma
-    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final_24h")
+    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final_7day")
 end
 
 # run
-TimeLimit = 100.0
+TimeLimit = 43200.0
 run_118_test(TimeLimit)
 
 # %% ===
@@ -97,3 +97,20 @@ run_118_test(TimeLimit)
 #boundlog = read(fid, "boundlog")
 #bestlog  = read(fid, "bestlog") 
 #close(fid)
+
+# squeue -u $USER
+# tail -f solve_118_1791051.out
+# tail -n +1 -f solve_118_1791051.out
+# tail -n +1 -f solve_118_1792140.out
+
+#fid      = h5open(testdata_file, "r")
+#gaplog   = read(fid, "gaplog")  
+#timelog  = read(fid, "timelog") 
+#boundlog = read(fid, "boundlog")
+#bestlog  = read(fid, "bestlog") 
+#close(fid)
+
+#gr(show=false)
+#plot(timelog/3600, bestlog)
+#plot!(timelog/3600,boundlog)
+#savefig("comp_h.png")
