@@ -39,12 +39,12 @@ for case in cases
     pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
     # locally solve Farkas' lemma
-    A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+    A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 
     # get locally robust generation dispatch
-    pg0    = maximize_p0_margin(A, B, b)
-    t0, v0 = initialize_local_control(A, B, b, pg0)
-    term_stat, G0_lcl, pg0_lcl, v0_lcl, t0_lcl = solve_control_local(A, B, b, pg0, t0, v0, tmax_ipopt; random_start=false)
+    pg0    = maximize_p0_margin(A, B, c)
+    t0, v0 = initialize_local_control(A, B, c, pg0)
+    term_stat, G0_lcl, pg0_lcl, v0_lcl, t0_lcl = solve_control_local(A, B, c, pg0, t0, v0, tmax_ipopt; random_start=false)
     if Int(term_stat) ∉ [1;4;7]
         @warn("ipopt failed!")
     end
@@ -58,7 +58,7 @@ for case in cases
               :G     => G0_lcl)
 
     # solve squeeze log
-    control_log = solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
+    control_log = solve_control(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
 
     best_control[ii] = control_log[:bestlog][end]
     ii = ii + 1
@@ -80,7 +80,7 @@ for case in cases
     pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
     # locally solve Farkas' lemma
-    A,B,b,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+    A,B,c,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
     num_mu       = size(A,1)
     n_perts      = size(B,2)
 
@@ -101,10 +101,10 @@ for case in cases
             mu0    = 10.0*rand(num_mu)
         end
 
-        term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, b; initialize_start=initialize_start, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
+        term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, c; initialize_start=initialize_start, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
         if Int(term_stat) ∉ [1;4;7]
             # decrease solver tolerance and try again
-            term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, b; initialize_start=initialize_start, lower_ipopt_tol=true, delta0=delta0, mu0=mu0)
+            term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, c; initialize_start=initialize_start, lower_ipopt_tol=true, delta0=delta0, mu0=mu0)
             if (Int(term_stat) ∈ [1;4;7]) && (attack_obj > obj)
                 attack_obj = copy(obj)
                 mu_fl      = copy(mu_lcl)
@@ -128,7 +128,7 @@ for case in cases
               :G     => 0)
 
     # solve farkas lemma
-    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
+    faraks_log = solve_farkas_lemma(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
 
     best_attack[ii]  = faraks_log[:bestlog][end]
     ii = ii + 1

@@ -3,11 +3,10 @@ using Plots
 using Random
 using LinearAlgebra
 using InvertedIndices
-using Mosek, MosekTools
 using PowerModels, PGLib
 using JuMP, Ipopt, Gurobi
 
-include("./squeeze_functions.jl")
+include("./src/squeeze_functions.jl")
 Random.seed!(1)
 
 # call case
@@ -43,7 +42,7 @@ for ii in 1:num_perts
     end
 
     pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
-    A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+    A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", 0.01)
@@ -58,8 +57,8 @@ for ii in 1:num_perts
     @constraint(model, 0.0 .<= mu .<= 1.0)
     @constraint(model, A'*mu .== 0.0)
     @constraint(model, sum(mu) == 1.0)
-    @constraint(model, A*p + B*delta + b .<= 0.0001)
-    @constraint(model, mu.*(A*p + B*delta + b) .== 0.0)
+    @constraint(model, A*p + B*delta + c .<= 0.0001)
+    @constraint(model, mu.*(A*p + B*delta + c) .== 0.0)
     @objective(model, Min, dot(delta,delta))
     optimize!(model)
 

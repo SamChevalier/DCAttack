@@ -31,7 +31,7 @@ function run_118_test(TimeLimit::Float64)
     pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
     # locally solve Farkas' lemma
-    A,B,b,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+    A,B,c,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
     num_mu       = size(A,1)
     n_perts      = size(B,2)
 
@@ -52,10 +52,10 @@ function run_118_test(TimeLimit::Float64)
             mu0    = 10.0*rand(num_mu)
         end
 
-        term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, b; initialize_start=initialize_start, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
+        term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, c; initialize_start=initialize_start, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
         if Int(term_stat) ∉ [1;4;7]
             # decrease solver tolerance and try again
-            term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, b; initialize_start=initialize_start, lower_ipopt_tol=true, delta0=delta0, mu0=mu0)
+            term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, c; initialize_start=initialize_start, lower_ipopt_tol=true, delta0=delta0, mu0=mu0)
             if (Int(term_stat) ∈ [1;4;7]) && (attack_obj > obj)
                 attack_obj = copy(obj)
                 mu_fl      = copy(mu_lcl)
@@ -79,7 +79,7 @@ function run_118_test(TimeLimit::Float64)
               :G     => 0)
 
     # solve farkas lemma
-    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final_7day")
+    faraks_log = solve_farkas_lemma(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final_7day")
 end
 
 # run

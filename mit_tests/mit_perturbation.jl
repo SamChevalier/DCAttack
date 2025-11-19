@@ -3,7 +3,6 @@ using Plots
 using Random
 using LinearAlgebra
 using InvertedIndices
-using Mosek, MosekTools
 using PowerModels, PGLib
 using JuMP, Ipopt, Gurobi
 
@@ -27,6 +26,7 @@ basic_network_data_base = deepcopy(basic_network_data)
 
 
 # %% ======
+nb = length(basic_network_data["bus"])
 p = plot(xlim = [0,100], ylim = [0,10], ylabel = "load perturbation 2-norm (pu)", xlabel = "trial number")
 trial = 1
 smallest_inf = 100.0
