@@ -14,9 +14,17 @@ Random.seed!(1)
 
 include("./src/squeeze_functions.jl")
 
-# %% ========= attack sequence! ========= %% #
+# this script tests the bilevel reformulation
 
-case = "pglib_opf_case118_ieee.m"
+# %% ========= attack sequence! ========= %% #
+cases =     ["pglib_opf_case5_pjm.m";
+             "pglib_opf_case14_ieee.m";
+             "pglib_opf_case24_ieee_rts.m"
+             "pglib_opf_case30_as.m";
+             "pglib_opf_case57_ieee.m";
+             "pglib_opf_case60_c.m";
+             "pglib_opf_case118_ieee.m"]
+case = cases[6]
 network_data       = pglib(case)
 basic_network_data = PowerModels.make_basic_network(network_data)
 zero_nonlinear_costs!(basic_network_data)
@@ -47,27 +55,8 @@ epsilon = 0.001
 @constraint(model, sum(mu) == 1.0)
 @constraint(model, A*p + B*delta + b .<= epsilon)
 @constraint(model, mu.*(A*p + B*delta + b) .== 0.0)
-
-@constraint(model, -1 .<= delta .<= 1)
-
 @objective(model, Min, dot(delta,delta))
-
-# log structures
-global timelog  = []
-global bestlog  = []
-global boundlog = []
-MOI.set(model, Gurobi.CallbackFunction(), callback_log)
 
 # optimize
 optimize!(model)
-
-# clean up
-faraks_log = filterlog(timelog, bestlog, boundlog)
-
-# write to file
-extra_string = "_final_reformulation"
-testdata_file = "./data/farkas_"*string(nb)*"bus"*extra_string*".h5"
-write_hdf5data(testdata_file, faraks_log)
-
 println(objective_value(model))
-
