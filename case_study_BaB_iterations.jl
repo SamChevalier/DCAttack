@@ -3,10 +3,11 @@ using Plots
 using Random
 using LinearAlgebra
 using InvertedIndices
+using Mosek, MosekTools
 using PowerModels, PGLib
 using JuMP, Ipopt, Gurobi
 
-include("./src/squeeze_functions.jl")
+include("./squeeze_functions.jl")
 
 # %% call case
 case = "pglib_opf_case5_pjm.m"
@@ -54,8 +55,8 @@ TimeLimit = 100.00
 # %% ===========
 nb = 5
 
-testdata_file_farkas = "./data/farkas_"*string(nb)*"bus_casestudy.h5"
-testdata_file_control = "./data/control_"*string(nb)*"bus_casestudy.h5"
+testdata_file_farkas = "./dcopf/data/farkas_"*string(nb)*"bus_casestudy.h5"
+testdata_file_control = "./dcopf/data/control_"*string(nb)*"bus_casestudy.h5"
 gaplog5_farkas,  timelog5_farkas,  boundlog5_farkas,  bestlog5_farkas = read_hdf5data(testdata_file_farkas)
 gaplog5_control, timelog5_control, boundlog5_control, bestlog5_control = read_hdf5data(testdata_file_control)
 
@@ -64,9 +65,10 @@ gr()
 
 scaled_upper_bound =  boundlog5_control[16:10:end]/100000
 scaled_upper_bound[1:1000] = 2*scaled_upper_bound[1:1000]
-plot(timelog5_control[16:10:end], bestlog5_control[16:10:end], color = :steelblue, width = 8, label = "Attack Incumbent",legendfontsize=9, linealpha = 0.75)
-plot!(timelog5_control[16:10:end], scaled_upper_bound, color = :steelblue, width = 2, linestyle = :dashdot, label = "Attack Bound (Scaled Down)")
-plot!(timelog5_control[16:10:end], bestlog5_control[16:10:end],fillrange = scaled_upper_bound, fillalpha=0.2, color=:steelblue, label="Attack Gap")
+scaled_upper_bound .= 20.0
+plot(timelog5_control[16:10:end], bestlog5_control[16:10:end], color = :steelblue, width = 8, label = "Defense Incumbent",legendfontsize=9, linealpha = 0.75)
+#plot!(timelog5_control[16:10:end], scaled_upper_bound, color = :steelblue, width = 2, linestyle = :dashdot, label = "Attack Bound (Scaled Down)")
+plot!(timelog5_control[16:10:end], bestlog5_control[16:10:end],fillrange = scaled_upper_bound, fillalpha=0.2, color=:steelblue, label="Defense Gap", legend = :topright)
 
 
 c1 = 165/256
@@ -74,9 +76,9 @@ c2 = 42/256
 c3 = 42/256
 redd = RGB(c1,c2,c3)
 
-plot!(timelog5_farkas[3:10:end], bestlog5_farkas[3:10:end], color=redd, width = 2, label = "Defense Incumbent")
-plot!(timelog5_farkas[3:10:end], boundlog5_farkas[3:10:end], color=redd, linestyle = :dashdot, width = 2, label = "Defense Bound")
-plot!(timelog5_farkas[3:10:end], boundlog5_farkas[3:10:end], fillrange=bestlog5_farkas[3:10:end], fillalpha=0.2, label="Defence Gap", color=redd)
+plot!(timelog5_farkas[3:10:end], bestlog5_farkas[3:10:end], color=redd, width = 2, label = "Attack Incumbent")
+plot!(timelog5_farkas[3:10:end], boundlog5_farkas[3:10:end], color=redd, linestyle = :dashdot, width = 2, label = "Attack Bound")
+plot!(timelog5_farkas[3:10:end], boundlog5_farkas[3:10:end], fillrange=bestlog5_farkas[3:10:end], fillalpha=0.2, label="Attack Gap", color=redd)
 
 annotate!([(20, 13, ("smallest adversarial attack", 9))])
 annotate!([(20, 11.8, ("proved here!", 9))])
@@ -90,5 +92,5 @@ x = 2*r * cos.(θ) .+ 0.2
 y = r * sin.(θ) .+ 6.28
 plot!(x, y, color=:black, width = 1.75, label ="",xtickfontsize = 9,ytickfontsize = 9, xlabel = "Branch and Bound solve time (seconds)", ylabel = "Bound or Incumbent")
 
-p = plot!(size=(600,300))
-savefig("case_study.pdf")
+p = plot!(size=(600,300), dpi=500)
+# savefig("case_study.pdf")

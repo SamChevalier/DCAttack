@@ -1,3 +1,7 @@
+using Pkg
+Pkg.activate(".")
+
+# call packages
 using HDF5
 using Plots
 using LinearAlgebra
@@ -8,70 +12,17 @@ using JuMP, Ipopt, Gurobi
 using Random
 Random.seed!(1)
 
+# %% test
 include("./src/squeeze_functions.jl")
 
-# define test cases and make sure they are parsed correctly
-cases =     ["pglib_opf_case5_pjm.m";
-             "pglib_opf_case14_ieee.m";
-             "pglib_opf_case24_ieee_rts.m"
-             "pglib_opf_case30_as.m";
-             "pglib_opf_case57_ieee.m";
-             "pglib_opf_case60_c.m";
-             "pglib_opf_case118_ieee.m"]
+function run_118_test(TimeLimit::Float64)
+    MIPGap    = 0.001
+    # => TimeLimit = 100.0
 
-# test parsing of the test cases
-test_parsing(cases)
+    # %% ========= attack sequence! ========= %% #
+    tmax_ipopt  = 600.0   
 
-# %% ========= defense sequence! ========= %% #
-ii = 1
-best_control = zeros(length(cases))
-tmax_ipopt   = 600.0   
-MIPGap       = 0.001
-TimeLimit    = 1800.00
-
-for case in cases
-
-    network_data       = pglib(case)
-    basic_network_data = PowerModels.make_basic_network(network_data)
-    zero_nonlinear_costs!(basic_network_data)
-
-    # solve dcopf
-    pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
-
-    # locally solve Farkas' lemma
-    A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
-
-    # get locally robust generation dispatch
-    pg0    = maximize_p0_margin(A, B, b)
-    t0, v0 = initialize_local_control(A, B, b, pg0)
-    term_stat, G0_lcl, pg0_lcl, v0_lcl, t0_lcl = solve_control_local(A, B, b, pg0, t0, v0, tmax_ipopt; random_start=false)
-    if Int(term_stat) ∉ [1;4;7]
-        @warn("ipopt failed!")
-    end
-
-    # initialize 
-    x0 = Dict(:mu    => 0,
-              :delta => 0,
-              :pg0   => pg0_lcl,
-              :t     => t0_lcl,
-              :v     => v0_lcl,
-              :G     => G0_lcl)
-
-    # solve squeeze log
-    control_log = solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
-
-    best_control[ii] = control_log[:bestlog][end]
-    ii = ii + 1
-end
-
-# %% ========= attack sequence! ========= %% #
-ii = 1
-best_attack  = zeros(length(cases))
-tmax_ipopt   = 600.0   
-MIPGap       = 0.001
-TimeLimit    = 1800.00
-
-for case in cases
+    case = "pglib_opf_case118_ieee.m"
     network_data       = pglib(case)
     basic_network_data = PowerModels.make_basic_network(network_data)
     zero_nonlinear_costs!(basic_network_data)
@@ -128,8 +79,38 @@ for case in cases
               :G     => 0)
 
     # solve farkas lemma
-    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final")
-
-    best_attack[ii]  = faraks_log[:bestlog][end]
-    ii = ii + 1
+    faraks_log = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="_final_7day")
 end
+
+# run
+tg = 172800.0 - 500.0
+run_118_test(tg)
+
+# %% ===
+#using HDF5
+#nb = 118
+#extra_string="_final_24h"
+#testdata_file = "./data/farkas_"*string(nb)*"bus"*extra_string*".h5"
+#fid      = h5open(testdata_file, "r")
+#gaplog   = read(fid, "gaplog")  
+#timelog  = read(fid, "timelog") 
+#boundlog = read(fid, "boundlog")
+#bestlog  = read(fid, "bestlog") 
+#close(fid)
+
+# squeue -u $USER
+# tail -f solve_118_1791051.out
+# tail -n +1 -f solve_118_1791051.out
+# tail -n +1 -f solve_118_1792140.out
+
+#fid      = h5open(testdata_file, "r")
+#gaplog   = read(fid, "gaplog")  
+#timelog  = read(fid, "timelog") 
+#boundlog = read(fid, "boundlog")
+#bestlog  = read(fid, "bestlog") 
+#close(fid)
+
+#gr(show=false)
+#plot(timelog/3600, bestlog)
+#plot!(timelog/3600,boundlog)
+#savefig("comp_h.png")

@@ -1,0 +1,317 @@
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:01:28 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:01:28 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11.0 (26100.2))
+
+CPU model: 13th Gen Intel(R) Core(TM) i9-13900H, instruction set [SSE2|AVX|AVX2]
+Thread count: 14 physical cores, 20 logical processors, using up to 20 threads
+
+Non-default parameters:
+TimeLimit  15
+MIPGap  0.001
+MIPFocus  3
+
+Optimize a model with 99 rows, 115 columns and 468 nonzeros
+Model fingerprint: 0xe3c9076f
+Model has 21 quadratic objective terms
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [2e-04, 1e+00]
+  QMatrix range    [4e-04, 1e+00]
+  QLMatrix range   [7e-02, 3e+00]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [2e+00, 2e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+  QRHS range       [1e-03, 1e-03]
+Presolve removed 94 rows and 0 columns
+
+Continuous model is non-convex -- solving as a MIP
+
+Presolve removed 94 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 5830 rows, 1572 columns, 13572 nonzeros
+Presolved model has 21 quadratic objective terms
+Presolved model has 1456 bilinear constraint(s)
+Warning: Model contains variables with very large bounds participating
+         in product terms.
+         Presolve was not able to compute smaller bounds for these variables.
+         Consider bounding these variables or reformulating the model.
+
+Variable types: 1572 continuous, 0 integer (0 binary)
+Root relaxation presolve: All rows and columns removed
+
+Root relaxation: objective 0.000000e+00, 0 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     2    0.00000    0    1          -    0.00000      -     -    0s
+H 2426  2305                       0.0322465    0.00000   100%  13.6    2s
+H 2915  2876                       0.0322465    0.00000   100%  13.1    3s
+H 3012  2734                       0.0322465    0.00000   100%  13.8    3s
+  3929  4005    0.01000   45    1    0.03225    0.00000   100%  19.2    5s
+H 6810  5933                       0.0322465    0.00000   100%  49.4    9s
+H 6819  5831                       0.0322465    0.00000   100%  50.5    9s
+  7869  6502    0.00000   34    1    0.03225    0.00000   100%  57.2   11s
+H 9742  7917                       0.0322465    0.00000   100%  69.9   14s
+H 9777  7917                       0.0322465    0.00000   100%  70.3   14s
+H 9813  7917                       0.0322465    0.00000   100%  70.3   14s
+H 9923  7917                       0.0322465    0.00000   100%  71.3   14s
+ 10414  8225    0.00000   34    1    0.03225    0.00000   100%  72.1   15s
+
+Explored 10734 nodes (781938 simplex iterations) in 15.06 seconds (5.72 work units)
+Thread count was 20 (of 20 available processors)
+
+Solution count 9: 0.0322465 0.0322465 0.0322465 ... 0.0322465
+
+Time limit reached
+Best objective 3.224648981008e-02, best bound 0.000000000000e+00, gap 100.0000%
+
+User-callback calls 22398, time in user-callback 0.02 sec
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:08:59 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:08:59 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11.0 (26100.2))
+
+CPU model: 13th Gen Intel(R) Core(TM) i9-13900H, instruction set [SSE2|AVX|AVX2]
+Thread count: 14 physical cores, 20 logical processors, using up to 20 threads
+
+Non-default parameters:
+TimeLimit  15
+MIPGap  0.001
+MIPFocus  3
+
+Optimize a model with 99 rows, 115 columns and 468 nonzeros
+Model fingerprint: 0xe3c9076f
+Model has 21 quadratic objective terms
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [2e-04, 1e+00]
+  QMatrix range    [4e-04, 1e+00]
+  QLMatrix range   [7e-02, 3e+00]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [2e+00, 2e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+  QRHS range       [1e-03, 1e-03]
+Presolve removed 94 rows and 0 columns
+
+Continuous model is non-convex -- solving as a MIP
+
+Presolve removed 94 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 5830 rows, 1572 columns, 13572 nonzeros
+Presolved model has 21 quadratic objective terms
+Presolved model has 1456 bilinear constraint(s)
+Warning: Model contains variables with very large bounds participating
+         in product terms.
+         Presolve was not able to compute smaller bounds for these variables.
+         Consider bounding these variables or reformulating the model.
+
+Variable types: 1572 continuous, 0 integer (0 binary)
+Root relaxation presolve: All rows and columns removed
+
+Root relaxation: objective 0.000000e+00, 0 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     2    0.00000    0    1          -    0.00000      -     -    0s
+H 2426  2305                       0.0322465    0.00000   100%  13.6    2s
+H 2915  2876                       0.0322465    0.00000   100%  13.1    3s
+H 3012  2734                       0.0322465    0.00000   100%  13.8    3s
+  3929  4005    0.01000   45    1    0.03225    0.00000   100%  19.2    5s
+H 6810  5933                       0.0322465    0.00000   100%  49.4    9s
+H 6819  5831                       0.0322465    0.00000   100%  50.5    9s
+  7869  6502    0.00000   34    1    0.03225    0.00000   100%  57.2   10s
+H 9742  7917                       0.0322465    0.00000   100%  69.9   13s
+H 9777  7917                       0.0322465    0.00000   100%  70.3   13s
+H 9813  7917                       0.0322465    0.00000   100%  70.3   13s
+H 9923  7917                       0.0322465    0.00000   100%  71.3   13s
+ 10414  8522    0.00000   34    1    0.03225    0.00000   100%  72.1   15s
+H10589  8522                       0.0322465    0.00000   100%  72.6   15s
+
+Explored 11037 nodes (821783 simplex iterations) in 15.09 seconds (5.89 work units)
+Thread count was 20 (of 20 available processors)
+
+Solution count 10: 0.0322465 0.0322465 0.0322465 ... 0.0322465
+
+Time limit reached
+Best objective 3.224648612097e-02, best bound 0.000000000000e+00, gap 100.0000%
+
+User-callback calls 22978, time in user-callback 0.02 sec
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:38:14 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+
+Gurobi 12.0.2 (win64) logging started Thu Aug 21 09:38:14 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11.0 (26100.2))
+
+CPU model: 13th Gen Intel(R) Core(TM) i9-13900H, instruction set [SSE2|AVX|AVX2]
+Thread count: 14 physical cores, 20 logical processors, using up to 20 threads
+
+Non-default parameters:
+TimeLimit  15
+MIPGap  0.001
+MIPFocus  3
+
+Optimize a model with 99 rows, 115 columns and 468 nonzeros
+Model fingerprint: 0xe3c9076f
+Model has 21 quadratic objective terms
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [2e-04, 1e+00]
+  QMatrix range    [4e-04, 1e+00]
+  QLMatrix range   [7e-02, 3e+00]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [2e+00, 2e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+  QRHS range       [1e-03, 1e-03]
+Presolve removed 94 rows and 0 columns
+
+Continuous model is non-convex -- solving as a MIP
+
+Presolve removed 94 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 5830 rows, 1572 columns, 13572 nonzeros
+Presolved model has 21 quadratic objective terms
+Presolved model has 1456 bilinear constraint(s)
+Warning: Model contains variables with very large bounds participating
+         in product terms.
+         Presolve was not able to compute smaller bounds for these variables.
+         Consider bounding these variables or reformulating the model.
+
+Variable types: 1572 continuous, 0 integer (0 binary)
+Root relaxation presolve: All rows and columns removed
+
+Root relaxation: objective 0.000000e+00, 0 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     2    0.00000    0    1          -    0.00000      -     -    0s
+H 2426  2305                       0.0322465    0.00000   100%  13.6    2s
+H 2915  2876                       0.0322465    0.00000   100%  13.1    3s
+H 3012  2734                       0.0322465    0.00000   100%  13.8    3s
+  3929  4005    0.01000   45    1    0.03225    0.00000   100%  19.2    5s
+H 6810  5933                       0.0322465    0.00000   100%  49.4   10s
+H 6819  5831                       0.0322465    0.00000   100%  50.5   10s
+H 9742  7464                       0.0322465    0.00000   100%  69.9   15s
+H 9752  7464                       0.0322465    0.00000   100%  69.9   15s
+H 9758  7464                       0.0322465    0.00000   100%  69.9   15s
+H 9820  7464                       0.0322465    0.00000   100%  70.1   15s
+
+Explored 9959 nodes (706734 simplex iterations) in 15.06 seconds (5.21 work units)
+Thread count was 20 (of 20 available processors)
+
+Solution count 9: 0.0322465 0.0322465 0.0322465 ... 0.0322465
+
+Time limit reached
+Best objective 3.224648981008e-02, best bound 0.000000000000e+00, gap 100.0000%
+
+User-callback calls 20873, time in user-callback 0.02 sec
+
+Gurobi 12.0.2 (linux64) logging started Thu Aug 21 09:46:47 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+
+Gurobi 12.0.2 (linux64) logging started Thu Aug 21 09:46:47 2025
+
+Set parameter LogFile to value "./data/gurobi_branching_30bus.log"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (linux64 - "Ubuntu 24.04.1 LTS")
+
+CPU model: 13th Gen Intel(R) Core(TM) i9-13900H, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 20 logical processors, using up to 20 threads
+
+Non-default parameters:
+TimeLimit  15
+MIPGap  0.001
+MIPFocus  3
+
+Optimize a model with 99 rows, 115 columns and 468 nonzeros
+Model fingerprint: 0xe3c9076f
+Model has 21 quadratic objective terms
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [2e-04, 1e+00]
+  QMatrix range    [4e-04, 1e+00]
+  QLMatrix range   [7e-02, 3e+00]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [2e+00, 2e+00]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [0e+00, 0e+00]
+  QRHS range       [1e-03, 1e-03]
+Presolve removed 94 rows and 0 columns
+
+Continuous model is non-convex -- solving as a MIP
+
+Presolve removed 94 rows and 0 columns
+Presolve time: 0.00s
+Presolved: 5830 rows, 1572 columns, 13572 nonzeros
+Presolved model has 21 quadratic objective terms
+Presolved model has 1456 bilinear constraint(s)
+Warning: Model contains variables with very large bounds participating
+         in product terms.
+         Presolve was not able to compute smaller bounds for these variables.
+         Consider bounding these variables or reformulating the model.
+
+Variable types: 1572 continuous, 0 integer (0 binary)
+Root relaxation presolve: All rows and columns removed
+
+Root relaxation: objective 0.000000e+00, 0 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     2    0.00000    0    1          -    0.00000      -     -    0s
+H 1748  1661                       0.0322465    0.00000   100%  12.3    1s
+H 2158  2256                       0.0322465    0.00000   100%  11.7    2s
+H 2177  2171                       0.0322465    0.00000   100%  11.9    2s
+H 2344  2040                       0.0322465    0.00000   100%  13.3    2s
+H 2541  1903                       0.0322465    0.00000   100%  14.4    2s
+  5309  4471    0.00000   32    1    0.03225    0.00000   100%  42.0    5s
+H 6375  5543                       0.0322465    0.00000   100%  52.6    6s
+H 7289  5543                       0.0322465    0.00000   100%  60.0    6s
+H 9055  8133                       0.0322465    0.00000   100%  71.2    9s
+H 9223  8133                       0.0322465    0.00000   100%  71.7    9s
+H 9410  8133                       0.0322465    0.00000   100%  74.4    9s
+H 9942  8995                       0.0322465    0.00000   100%  77.3   11s
+H10074  8995                       0.0322465    0.00000   100%  78.2   11s
+H10816  9792                       0.0322465    0.00000   100%  81.4   12s
+H11663 10511                       0.0322465    0.00000   100%  86.4   13s
+H11675 10511                       0.0322465    0.00000   100%  87.0   13s
+H12081 10511                       0.0322465    0.00000   100%  91.4   13s
+H12533 11339                       0.0322465    0.00000   100%  96.5   14s
+H12670 11339                       0.0322465    0.00000   100%  97.8   14s
+ 13270 12137    0.01000   54    1    0.03225    0.00000   100%  98.2   15s
+H13318 12137                       0.0322465    0.00000   100%  98.4   15s
+H13500 12137                       0.0322465    0.00000   100%   100   15s
+
+Explored 14090 nodes (1429219 simplex iterations) in 15.01 seconds (8.65 work units)
+Thread count was 20 (of 20 available processors)
+
+Solution count 10: 0.0322465 0.0322465 0.0322465 ... 0.0322465
+
+Time limit reached
+Best objective 3.224647409796e-02, best bound 0.000000000000e+00, gap 100.0000%
+
+User-callback calls 29008, time in user-callback 0.03 sec
