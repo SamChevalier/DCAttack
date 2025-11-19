@@ -10,7 +10,7 @@ using JuMP, Ipopt, Gurobi
 # This script tests local attacks: given a load
 # perturbation, PowerModels tests for feasibility
 
-include("./squeeze_functions.jl")
+include("../src/squeeze_functions.jl")
 Random.seed!(1)
 
 # call case

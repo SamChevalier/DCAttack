@@ -11,7 +11,7 @@ using JuMP, Ipopt, Gurobi
 using Random
 Random.seed!(1)
 
-include("../squeeze_functions.jl")
+include("../src/squeeze_functions.jl")
 
 # %% ========= attack sequence! ========= %% #
 case = "pglib_opf_case57_ieee.m"
