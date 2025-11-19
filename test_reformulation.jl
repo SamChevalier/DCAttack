@@ -33,7 +33,7 @@ zero_nonlinear_costs!(basic_network_data)
 pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
 # locally solve Farkas' lemma
-A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 
 # now, solve the reformulation ==========
 model = Model(Gurobi.Optimizer)
@@ -53,8 +53,8 @@ epsilon = 0.001
 @constraint(model, 0.0 .<= mu .<= 1.0)
 @constraint(model, A'*mu .== 0.0)
 @constraint(model, sum(mu) == 1.0)
-@constraint(model, A*p + B*delta + b .<= epsilon)
-@constraint(model, mu.*(A*p + B*delta + b) .== 0.0)
+@constraint(model, A*p + B*delta + c .<= epsilon)
+@constraint(model, mu.*(A*p + B*delta + c) .== 0.0)
 @objective(model, Min, dot(delta,delta))
 
 # optimize

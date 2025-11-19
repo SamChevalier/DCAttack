@@ -34,7 +34,7 @@ zero_nonlinear_costs!(basic_network_data)
 pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
 # locally solve Farkas' lemma
-A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 
 model = Model(Gurobi.Optimizer)
 tg = 172800.0 - 500.0
@@ -48,7 +48,7 @@ n_perts = size(B,2)
 @variable(model, mu[1:num_mu])
 @constraint(model, 0.0 .<= mu)
 @constraint(model, A'*mu .== 0.0)
-@constraint(model, mu'*(B*delta+b) .== 0.0001)
+@constraint(model, mu'*(B*delta+c) .== 0.0001)
 @constraint(model, sum(mu) == 1.0)
 @objective(model, Min, dot(delta,delta))
 

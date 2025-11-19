@@ -3,11 +3,10 @@ using Plots
 using Random
 using LinearAlgebra
 using InvertedIndices
-using Mosek, MosekTools
 using PowerModels, PGLib
 using JuMP, Ipopt, Gurobi
 
-include("./squeeze_functions.jl")
+include("./src/squeeze_functions.jl")
 
 # %% call case
 case = "pglib_opf_case5_pjm.m"
@@ -24,17 +23,17 @@ zero_nonlinear_costs!(basic_network_data)
 pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
 # %% locally solve Farkas' lemma
-A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 # get locally robust generation dispatch
-pg0    = maximize_p0_margin(A, B, b)
-t0, v0 = initialize_local_control(A, B, b, pg0)
+pg0    = maximize_p0_margin(A, B, c)
+t0, v0 = initialize_local_control(A, B, c, pg0)
 
 num_mu  = size(A,1)
 n_perts = size(B,2)
 nx      = size(A,2)
 nc      = size(A,1)
 tmax_ipopt = 100.0
-term_stat, G0_lcl, pg0_lcl, v0_lcl, t0_lcl = solve_control_local(A, B, b, pg0, t0, v0, tmax_ipopt; random_start=false)
+term_stat, G0_lcl, pg0_lcl, v0_lcl, t0_lcl = solve_control_local(A, B, c, pg0, t0, v0, tmax_ipopt; random_start=false)
 
 println(t0_lcl)
 
@@ -49,8 +48,8 @@ x0 = Dict(  :mu    => randn(),
 extra_string = "_casestudy"
 
 TimeLimit = 100.00
-# => control_log = solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string=extra_string)
-# => faraks_log  = solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string=extra_string)
+# => control_log = solve_control(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string=extra_string)
+# => faraks_log  = solve_farkas_lemma(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string=extra_string)
 
 # %% ===========
 nb = 5

@@ -148,7 +148,7 @@ zero_nonlinear_costs!(basic_network_data)
 pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
 # locally solve Farkas' lemma
-A,B,b,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+A,B,c,nb     = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 num_mu       = size(A,1)
 n_perts      = size(B,2)
 
@@ -157,7 +157,7 @@ Random.seed!(3)
 delta0 = randn(n_perts)
 mu0    = rand(num_mu)
 
-term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, b; initialize_start=true, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
+term_stat, delta_lcl, mu_lcl, obj = solve_farkas_lemma_local(A, B, c; initialize_start=true, lower_ipopt_tol=false, delta0=delta0, mu0=mu0)
 println(obj)
 
 percent_load_change = 100*(sys[:N_delta]*delta_lcl)/sum(sys[:pd])

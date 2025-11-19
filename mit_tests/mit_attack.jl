@@ -26,7 +26,7 @@ function run_attack(case::String)
     pm_result, model, model_fl, sys = solve_dcopf(basic_network_data)
 
     # locally solve Farkas' lemma
-    A,B,b,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:b]),copy(sys[:nb])
+    A,B,c,nb = copy(sys[:A]),copy(sys[:B]),copy(sys[:c]),copy(sys[:nb])
 
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", 0.01)
@@ -38,7 +38,7 @@ function run_attack(case::String)
     @variable(model, mu[1:num_mu])
     @constraint(model, 0.0 .<= mu)
     @constraint(model, A'*mu .== 0.0)
-    @constraint(model, mu'*(B*delta+b) .== 0.0001)
+    @constraint(model, mu'*(B*delta+c) .== 0.0001)
     @constraint(model, sum(mu) == 1.0)
     @objective(model, Min, dot(delta,delta))
 

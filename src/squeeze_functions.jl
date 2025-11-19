@@ -172,12 +172,12 @@ function solve_dcopf(basic_network_data)
         g_sum'; 
         -Matrix(I,ng-1,ng-1)]
     B = [-ptdf_full*N_delta; ptdf_full*N_delta; d_sum'; zeros(ng-1,n_perts); -d_sum'; zeros(ng-1,n_perts)]
-    b = [-ptdf_full*pd - flow_max; -flow_max + ptdf_full*pd; [sum(pd); zeros(ng-1)] - pmax; pmin - [sum(pd); zeros(ng-1)]]
+    c = [-ptdf_full*pd - flow_max; -flow_max + ptdf_full*pd; [sum(pd); zeros(ng-1)] - pmax; pmin - [sum(pd); zeros(ng-1)]]
 
     # as a final test, make sure this model is also correct
     model_fl = Model(Gurobi.Optimizer)
     @variable(model_fl, pg[2:ng])
-    @constraint(model_fl, A*pg + b .<= 0.0)
+    @constraint(model_fl, A*pg + c .<= 0.0)
     @objective(model_fl, Min, lin_cost[2:end]'*pg + lin_cost[1]*(sum(pd)-sum(pg)) + c0)
     optimize!(model_fl)
 
@@ -202,7 +202,7 @@ function solve_dcopf(basic_network_data)
                :pert_index => pert_index, 
                :A => A, 
                :B => B, 
-               :b => b,
+               :c => c,
                :c0 => c0)
 
     # output
@@ -299,7 +299,7 @@ function dcfeas_ineq(C_in, d_in, gamma)
     return Int(termination_status(model)), value.(x)
 end
 
-function solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
+function solve_farkas_lemma(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", MIPGap)
     set_optimizer_attribute(model, "TimeLimit", TimeLimit)
@@ -314,7 +314,7 @@ function solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra
     @variable(model, mu[1:num_mu])
     @constraint(model, 0.0 .<= mu)
     @constraint(model, A'*mu .== 0.0)
-    @constraint(model, mu'*(B*delta+b) .== 0.001)
+    @constraint(model, mu'*(B*delta+c) .== 0.001)
     @objective(model, Min, dot(delta,delta))
 
     # initialize with x0
@@ -342,7 +342,7 @@ function solve_farkas_lemma(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra
     return faraks_log
 end
 
-function solve_farkas_lemma_record_log(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
+function solve_farkas_lemma_record_log(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", MIPGap)
     set_optimizer_attribute(model, "TimeLimit", TimeLimit)
@@ -355,7 +355,7 @@ function solve_farkas_lemma_record_log(A, B, b, MIPGap, TimeLimit, nb, x0; init=
     @variable(model, mu[1:num_mu])
     @constraint(model, 0.0 .<= mu)
     @constraint(model, A'*mu .== 0.0)
-    @constraint(model, mu'*(B*delta+b) .== 0.001)
+    @constraint(model, mu'*(B*delta+c) .== 0.001)
     @objective(model, Min, dot(delta,delta))
 
     # initialize with x0
@@ -381,7 +381,7 @@ function solve_farkas_lemma_record_log(A, B, b, MIPGap, TimeLimit, nb, x0; init=
     # =>return faraks_log
 end
 
-function solve_farkas_lemma_local(A, B, b; initialize_start = false, lower_ipopt_tol = false, delta0, mu0)
+function solve_farkas_lemma_local(A, B, c; initialize_start = false, lower_ipopt_tol = false, delta0, mu0)
     model = Model(Ipopt.Optimizer)
 
     if lower_ipopt_tol == true
@@ -396,7 +396,7 @@ function solve_farkas_lemma_local(A, B, b; initialize_start = false, lower_ipopt
     @variable(model, mu[1:num_mu])
     @constraint(model, 0.0 .<= mu)
     @constraint(model, A'*mu .== 0.0)
-    @constraint(model, mu'*(B*delta+b) .== 0.001)
+    @constraint(model, mu'*(B*delta+c) .== 0.001)
     @objective(model, Min, dot(delta,delta))
 
     if initialize_start == true
@@ -413,7 +413,7 @@ function solve_farkas_lemma_local(A, B, b; initialize_start = false, lower_ipopt
     return termination_status(model), value.(delta), value.(mu), value(dot(delta,delta))
 end
 
-function solve_control_local(A, B, b, pg0, t0, v0, tmax; random_start=false)
+function solve_control_local(A, B, c, pg0, t0, v0, tmax; random_start=false)
     model = Model(Ipopt.Optimizer)
     set_optimizer_attribute(model, "max_cpu_time", tmax)
 
@@ -445,11 +445,11 @@ function solve_control_local(A, B, b, pg0, t0, v0, tmax; random_start=false)
     # constrain
     for ii in 1:nc
         @constraint(model, v[ii] == ((G'*A[ii,:] + B[ii,:])'*(G'*A[ii,:] + B[ii,:])))
-        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + b[ii])^2)
+        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + c[ii])^2)
     end
 
     # base feasibility constraint
-    @constraint(model, A*p0 + b .<= 0.0)
+    @constraint(model, A*p0 + c .<= 0.0)
     @objective(model, Max, t)
 
     # optimize
@@ -461,7 +461,7 @@ function solve_control_local(A, B, b, pg0, t0, v0, tmax; random_start=false)
     return termination_status(model), value.(G), value.(p0), value.(v), value(t)
 end
 
-function solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
+function solve_control(A, B, c, MIPGap, TimeLimit, nb, x0; init=true, extra_string="")
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", MIPGap)
     set_optimizer_attribute(model, "TimeLimit", TimeLimit)
@@ -489,11 +489,11 @@ function solve_control(A, B, b, MIPGap, TimeLimit, nb, x0; init=true, extra_stri
     # constrain
     for ii in 1:nc
         @constraint(model, v[ii] == ((G'*A[ii,:] + B[ii,:])'*(G'*A[ii,:] + B[ii,:])))
-        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + b[ii])^2)
+        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + c[ii])^2)
     end
 
     # base feasibility constraint
-    @constraint(model, A*p0 + b .<= 0.0)
+    @constraint(model, A*p0 + c .<= 0.0)
     @objective(model, Max, t)
 
     # log structures
@@ -517,7 +517,7 @@ end
 
 
 
-function solve_squeeze(A, B, b, MIPGap, TimeLimit, nb, x0)
+function solve_squeeze(A, B, c, MIPGap, TimeLimit, nb, x0)
     model = Model(Gurobi.Optimizer)
     set_optimizer_attribute(model, "MIPGap", MIPGap)
     set_optimizer_attribute(model, "TimeLimit", TimeLimit)
@@ -528,7 +528,7 @@ function solve_squeeze(A, B, b, MIPGap, TimeLimit, nb, x0)
     @variable(model, mu[1:num_mu])
     @constraint(model, 0.0 .<= mu)
     @constraint(model, A'*mu .== 0.0)
-    @constraint(model, mu'*(B*delta+b) .== 0.001)
+    @constraint(model, mu'*(B*delta+c) .== 0.001)
 
     # initialize with x0
     set_start_value.(delta, x0[:delta])
@@ -551,11 +551,11 @@ function solve_squeeze(A, B, b, MIPGap, TimeLimit, nb, x0)
 
     for ii in 1:nc
         @constraint(model, v[ii] == ((G'*A[ii,:] + B[ii,:])'*(G'*A[ii,:] + B[ii,:])))
-        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + b[ii])^2)
+        @constraint(model, t*v[ii] .<= (A[ii,:]'*p0 + c[ii])^2)
     end
 
     # base feasibility constraint
-    @constraint(model, A*p0 + b .<= 0.0)
+    @constraint(model, A*p0 + c .<= 0.0)
     @objective(model, Min,  (dot(delta,delta) - t)^2)
 
     # log structures
@@ -994,15 +994,15 @@ function read_hdf5data(testdata_file)
     return gaplog, timelog, boundlog, bestlog
 end
 
-function maximize_p0_margin(A,B,b)
+function maximize_p0_margin(A,B,c)
     model = Model(Gurobi.Optimizer)
     npg = size(A,2)
     @variable(model, pg[1:npg])
     @variable(model, t)
-    @constraint(model, A*pg + b .<= 0.0)
-    for ii in 1:length(b)
+    @constraint(model, A*pg + c .<= 0.0)
+    for ii in 1:length(c)
         if ~all(iszero, B[ii,:])
-            @constraint(model, dot(A[ii,:],pg) + b[ii] <= t)
+            @constraint(model, dot(A[ii,:],pg) + c[ii] <= t)
         end
     end
 
@@ -1012,10 +1012,10 @@ function maximize_p0_margin(A,B,b)
     return value.(pg)
 end
 
-function initialize_local_control(A,B,b,pg0)
+function initialize_local_control(A,B,c,pg0)
     model = Model(Gurobi.Optimizer)
     @variable(model, t)
-    ab    = (A*pg0 + b).^2
+    ab    = (A*pg0 + c).^2
     nc = size(A,1)
     vv = zeros(nc)
     for ii in 1:nc
